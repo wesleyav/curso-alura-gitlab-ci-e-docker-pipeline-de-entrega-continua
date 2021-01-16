@@ -1,0 +1,42 @@
+# Criar conta no gitlab
+# Criar projeto chamado bytebank
+# Realizar clone com:
+
+$ git remote add gitlab https://gitlab.com/jnlucas/meusistema.git
+$ git remote add origin git@github.com:alura-cursos/devops.git
+
+# Após criar projeto no gitlab, clonar o mesmo em repositório local
+$ git clone 
+
+# Baixar e descompactar para o diretório criado os arquivos do projeto em: https://github.com/alura-cursos/devops/archive/master.zip
+
+# Adiciná-los ao projeto com:
+$ git add --all
+$ git push
+
+# Configur o docker-compose.yaml
+
+# Subir o container:
+$ docker-compose up --build
+
+Com esse comando vamos subir o container, e caso não tenhamos ainda a imagem aluracursos/django_todolist_image_build em nossa máquina, ela será baixada pelo docker.
+
+Ao concluir o build, percebam que o terminal ficou preso a essa tarefa. Vamos então deixar que o mesmo rode em background, para isso digite no terminal:
+$ ctrl c
+
+# Em seguida vamos subir novamente o container:
+$ docker-compose up -d
+
+Passando o parâmetro -d para o comando, o container sobe mas não prende o terminal a esta tarefa.
+
+Agora que o container está de pé, vamos rodar os migrations iniciais que o projeto precisa. Então, digite no terminal:
+
+$ docker-compose run web python manage.py makemigrations
+$ docker-compose run web python manage.py migrate
+
+# E para criarmos um usuário para essa aplicação, ainda no terminal, digite:
+$ docker-compose run web python manage.py createsuperuser
+
+# É isso aí pessoal, agora temos o projeto funcionando em nosso container docker.
+
+#################################################
