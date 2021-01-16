@@ -40,3 +40,20 @@ $ docker-compose run web python manage.py createsuperuser
 # É isso aí pessoal, agora temos o projeto funcionando em nosso container docker.
 
 #################################################
+
+# Configurar a estrutura do .gitlab-ci.yml
+
+image: docker:stable
+
+services:
+- docker:dind
+
+before_script:
+- docker info
+
+build-docker:
+    stage: build
+    script: 
+    - docker build -t minha-imagem .
+
+#################################################
