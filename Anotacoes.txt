@@ -57,3 +57,11 @@ build-docker:
     - docker build -t minha-imagem .
 
 #################################################
+
+# Criar conta no docker hub
+
+# Criar variáveis de login no gitlab no menu settings > CICD > variables > add variable
+
+# Salvar, comitar e push
+
+#################################################
