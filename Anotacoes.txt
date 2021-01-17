@@ -309,3 +309,44 @@ $ exit
 
 
 #################################################
+
+# No terminal do gitlab-runner
+
+# Visualizar usuários do container
+$ cat /etc/passwd
+
+# Será usado o usuário gitlab-runner
+
+# Logar no usuário gitlab-runner
+$ su gitlab-runner
+
+# Gerar chaves
+$ ssh-keygen
+
+$ enter
+$ enter
+$ enter
+
+# Ir para o diretório padrão do usuário onde foi salvo a chave ssh
+$ cd /home/gitlab-runner/.ssh
+
+# Visualizar arquivos
+$ls -a
+
+# Copiar chave pública para o authorized keys da máquina destino
+$ cat id_rsa.pub
+
+# Sair do usuário
+$ exit
+
+# Voltar para a máquina local
+$ exit
+
+# Logar no usuário gitlab-runner
+$ su gitlab-runner
+
+# Acessar via ssh
+$ ssh usuario@ip
+
+
+#################################################
