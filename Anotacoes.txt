@@ -65,3 +65,15 @@ build-docker:
 # Salvar, comitar e push
 
 #################################################
+
+# Runner - executor de tarefas
+
+# No terminal, realizar um pull do gitlab runner na última versão:
+# Tem que instalar o docker na máquina local
+
+$ docker pull gitlab/gitlab-runner:latest
+
+# Subir um container do gitlab runner
+$ docker run -d --name gitlab-runner --restart always -v /Users/Shared/gitlab-runner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest
+
+#################################################
