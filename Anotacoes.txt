@@ -271,3 +271,41 @@ test-project:
 ### fim ###
 
 #################################################
+
+# Acessar o container local e abrir o bash
+$ docker exec -it gitlab-runner /bin/bash
+
+# Registrar 
+$ gitlab-runner register
+
+# Após esse comando, inserir as informações:
+
+https://gitlab.com/
+$ enter
+
+# Colar o token que foi criado na página do gitlab
+$ enter
+
+# Inserir descrição do runner:
+$ runner-deploy
+
+$ enter
+# Ignorar a tag
+$ enter
+
+# Definir o executor, digitar "docker"
+$ shell
+
+# Definir imagem padrão para o runner
+$ wesleyav/minha-imagem:latest
+
+# Registrado com sucesso!
+
+# Sair do temrinal do gitlab-runner
+$ exit
+
+# No gitlab atualizar a página do runners, será exibido o runner que foi criado
+# Editar o runner e adicionar a tag "executor-deploy" > salvar
+
+
+#################################################
