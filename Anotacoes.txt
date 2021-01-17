@@ -70,7 +70,17 @@ build-docker:
 
 # Após instalar o docker na máquina local, baixar a imagem do gitlab-runner
 # No Power Shell
-$ docker run gitlab/gitlab-runner:latest
+
+# Caso queira baixar a imagem
+$ docker pull gitlab/gitlab-runner:latest
+
+# Criar o diretório no Windows: c/Shared/gitlab-runner/
+
+# Criar e subir o container com a imagem gitlab-runner
+$ docker run -d --name gitlab-runner --restart always -v c/Shared/gitlab-runner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest
+
+# Exibir containers ativos:
+$ docker ps
 
 #################################################
 
@@ -79,8 +89,7 @@ $ docker run gitlab/gitlab-runner:latest
 # No Power Shell
 
 # Acessar o container local e abrir o bash
-# docker exec -it + id /bin/bash
-$ docker exec -it 6b341e859fc7 /bin/bash
+$ docker exec -it gitlab-runner /bin/bash
 
 # Registrar 
 $ gitlab-runner register
@@ -113,5 +122,66 @@ $ exit
 
 # No gitlab atualizar a página do runners, será exibido o runner que foi criado
 # Editar o runner e adicionar a tag "executor-tarefas" > salvar
+
+#################################################
+
+# Arquivo:
+
+### inicio ###
+
+image: docker:stable
+
+stages:
+- pre-build
+- build
+- test
+- deploy
+
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+
+build-docker:
+  services:
+  - docker:dind
+
+  before_script:
+  - docker info
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+
+  stage: pre-build
+  script:  
+  - docker build -t minha-imagem .
+  - docker tag minha-imagem wesleyav/minha-imagem:latest
+  - docker push wesleyav/minha-imagem:latest
+
+build-project:
+  image: wesleyav/minha-imagem:latest
+  services:
+  - docker:dind
+  - mysql:5.7
+  variables:
+    MYSQL_USER: xxx
+    MYSQL_PASSWORD: xxx
+    MYSQL_DATABASE: xxx
+    MYSQL_ROOT_PASSWORD: xxx
+
+    DB_NAME: 'xxx'
+    DB_USER: 'xxx'
+    DB_PASSWORD: 'xxx'
+    DB_PORT: 'xxx'
+    DB_HOST: 'xxx'
+    SECRET_KEY: 'xxx'
+
+  stage: build
+  tags:
+  - executor-tarefas
+  dependencies:
+  - build-docker
+  script:
+  - python manage.py makemigrations
+  - python manage.py migrate
+
+### fim ###
 
 #################################################
