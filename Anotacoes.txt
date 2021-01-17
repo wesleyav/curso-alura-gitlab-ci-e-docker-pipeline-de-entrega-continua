@@ -68,12 +68,50 @@ build-docker:
 
 # Runner - executor de tarefas
 
-# No terminal, realizar um pull do gitlab runner na última versão:
-# Tem que instalar o docker na máquina local
+# Após instalar o docker na máquina local, baixar a imagem do gitlab-runner
+# No Power Shell
+$ docker run gitlab/gitlab-runner:latest
 
-$ docker pull gitlab/gitlab-runner:latest
+#################################################
 
-# Subir um container do gitlab runner
-$ docker run -d --name gitlab-runner --restart always -v /Users/Shared/gitlab-runner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest
+# No gitlab ir em settings > CICD > Runners > copiar chave em "especific runners"
+
+# No Power Shell
+
+# Acessar o container local e abrir o bash
+# docker exec -it + id /bin/bash
+$ docker exec -it 6b341e859fc7 /bin/bash
+
+# Registrar 
+$ gitlab-runner register
+
+# Após esse comando, inserir as informações:
+
+https://gitlab.com/
+$ enter
+
+# Colar o token que foi criado na página do gitlab
+$ enter
+
+# Inserir descrição do runner:
+$ runner-bytebank
+
+$ enter
+# Ignorar a tag
+$ enter
+
+# Definir o executor, digitar "docker"
+$ docker
+
+# Definir imagem padrão para o runner
+$ wesleyav/minha-imagem:latest
+
+# Registrado com sucesso!
+
+# Sair do temrinal do gitlab-runner
+$ exit
+
+# No gitlab atualizar a página do runners, será exibido o runner que foi criado
+# Editar o runner e adicionar a tag "executor-tarefas" > salvar
 
 #################################################
