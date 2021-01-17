@@ -185,3 +185,89 @@ build-project:
 ### fim ###
 
 #################################################
+
+### fim ###
+
+image: docker:stable
+
+stages:
+- pre-build
+- build
+- test
+- deploy
+
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+
+build-docker:
+  services:
+  - docker:dind
+
+  before_script:
+  - docker info
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+
+  stage: pre-build
+  script:  
+  - docker build -t minha-imagem .
+  - docker tag minha-imagem wesleyav/minha-imagem:latest
+  - docker push wesleyav/minha-imagem:latest
+
+build-project:
+  image: wesleyav/minha-imagem:latest
+  services:
+  - docker:dind
+  - mysql:5.7
+  variables:
+    MYSQL_USER: $DB_USER
+    MYSQL_PASSWORD: $DB_PASSWORD 
+    MYSQL_DATABASE: $DB_DATABASE 
+    MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD 
+
+    DB_NAME: $DB_DATABASE
+    DB_USER: $DB_USER
+    DB_PASSWORD: $DB_PASSWORD
+    DB_PORT: '3306'
+    DB_HOST: 'mysql'
+    SECRET_KEY: $DB_SECRET_KEY
+
+  stage: build
+  tags:
+  - executor-tarefas
+  dependencies:
+  - build-docker
+  script:
+  - python manage.py makemigrations
+  - python manage.py migrate
+
+test-project:
+  image: wesleyav/minha-imagem:latest
+  stage: test
+  services:
+  - docker:dind
+  - mysql:5.7
+  variables:
+    MYSQL_USER: $DB_USER
+    MYSQL_PASSWORD: $DB_PASSWORD 
+    MYSQL_DATABASE: $DB_DATABASE 
+    MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD 
+
+    DB_NAME: $DB_DATABASE
+    DB_USER: $DB_USER
+    DB_PASSWORD: $DB_PASSWORD
+    DB_PORT: '3306'
+    DB_HOST: 'mysql'
+    SECRET_KEY: $DB_SECRET_KEY
+  
+  dependencies:
+  - build-project
+  tags:
+  - executor-tarefas
+  script:
+  - python -m unittest setUp
+
+
+### fim ###
+
+#################################################
